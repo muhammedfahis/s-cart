@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products
+  template:
+    metadata:
+      labels:
+        app: products
+    spec:
+      containers:
+        - name: products
+          image: muhammedfayiscc/s-cart-products
+          env:
+            - name: MONGO_URI
+              value: mongodb://products-mongo-svc:27017/products
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+
+---
+#infra/k8s/auth-svc.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-svc
+spec:
+  selector:
+    app: products
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      name: products
