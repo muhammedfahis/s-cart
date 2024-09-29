@@ -18,6 +18,12 @@ spec:
           env:
             - name: MONGO_URI
               value: mongodb://auth-mongo-svc:27017/auth
+            - name: KAFKA_CLIENT_ID
+              value: "auth-service-consumer-1" # You can use unique identifiers per replica if needed
+            - name: KAFKA_BROKERS
+              value: "kafka-depl-0.kafka-headless.default.svc.cluster.local:9092"
+            - name: GROUP_ID
+              value: "auth-service-group"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
