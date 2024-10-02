@@ -3,10 +3,9 @@ import 'reflect-metadata';
 import { json } from 'body-parser';
 import 'dotenv/config';
 import cookieSession from 'cookie-session';
-import { currentUser, errorHandler, NotFoundError } from '@fayisorg/common-modules';
+import { currentUser, errorHandler, NotFoundError, getUserDetails} from '@fayisorg/common-modules';
 
 import { OrderRouter } from './routes/order';
-
 
 
 const app = express();
@@ -20,6 +19,7 @@ app.use(
 )
 
 app.use(currentUser);
+app.use(getUserDetails());
 app.use('/api/orders',OrderRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())

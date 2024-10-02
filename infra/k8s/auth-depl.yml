@@ -15,6 +15,9 @@ spec:
       containers:
         - name: auth
           image: muhammedfayiscc/s-cart-auth
+          ports:
+            - containerPort: 50051
+            - containerPort: 3000
           env:
             - name: MONGO_URI
               value: mongodb://auth-mongo-svc:27017/auth
@@ -45,3 +48,7 @@ spec:
       port: 3000
       targetPort: 3000
       name: auth
+    - protocol: TCP
+      port: 50051
+      targetPort: 50051
+      name: grpc

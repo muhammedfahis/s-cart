@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './app';
 import { KafkaConsumer } from '@fayisorg/common-modules';
+import { startGrpcServer } from './grpc/server';
 
 (async () => {
     const shutdown = async () => {
@@ -31,6 +32,7 @@ import { KafkaConsumer } from '@fayisorg/common-modules';
     } catch (err) {
         console.log(err);
     }
+    startGrpcServer();
     app.listen(3000,() => {
         console.log('Listening on port 3000!!!!!');
     });

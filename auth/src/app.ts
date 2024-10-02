@@ -4,8 +4,6 @@ import { json } from 'body-parser';
 import 'dotenv/config';
 import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, NotFoundError, KafkaProducer, KafkaConsumer, IProducer, Topics, MessageType, TOPIC_TYPE } from '@fayisorg/common-modules';
-import { Producer, Consumer } from 'kafkajs';
-
 import { UserRouter } from './routes/user';
 
 
@@ -20,7 +18,7 @@ app.use(
 )
 
 app.use(currentUser);
-app.use('/api/user',UserRouter);
+app.use('/api/users',UserRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });

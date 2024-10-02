@@ -22,3 +22,4 @@ export const compare = async (storedPassword: string, suppliedPassword: string) 
     return buf.toString('hex') === hashedPassword;
 }
 
+

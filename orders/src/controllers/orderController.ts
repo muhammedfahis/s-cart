@@ -10,4 +10,12 @@ export class OrderController {
         this.orderInteractor = orderInteractor;
     }
 
+    async getOrder(req: any, res: any, next: any) {
+        try {
+            console.log(req.currentUser,'currentUser');
+         res.status(201).send('ok');
+        } catch (error) {
+        }
+     }
+
 }

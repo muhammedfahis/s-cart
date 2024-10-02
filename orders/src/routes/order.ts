@@ -19,6 +19,6 @@ const router = express.Router();
 
 const controller = container.get<OrderController>(INTERFACE_TYPE.OrderController);
 
-
+router.get('/list',controller.getOrder)
 
 export { router as OrderRouter} ;

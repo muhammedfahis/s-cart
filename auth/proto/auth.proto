@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package auth;
+
+// The AuthService definition.
+service AuthService {
+  // GetUser retrieves user details by user ID.
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+}
+
+// The request message containing the user ID.
+message GetUserRequest {
+  string user_id = 1;
+}
+
+// The response message containing user details.
+message GetUserResponse {
+  string id = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+  bool status = 5;
+}
