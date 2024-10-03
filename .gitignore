@@ -1,1 +1,33 @@
 node_modules
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+
+.pnp
+.pnp.js
+
+# testing
+coverage
+
+# production
+build
+tour/
+#google folder with cred
+google/
+# misc
+.DS_Store
+.env.local
+.env.prd
+.env.stg
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+#App side ignore
+env.js
+.env
