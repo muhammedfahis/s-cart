@@ -1,40 +1,10 @@
-Title
-===
-Abstract:xxx
-## Papar Information
-- Title:  `paper name`
-- Authors:  `A`,`B`,`C`
-- Preprint: [https://arxiv.org/abs/xx]()
-- Full-preprint: [paper position]()
-- Video: [video position]()
 
 ## Install & Dependence
-- python
-- pytorch
-- numpy
-
-## Dataset Preparation
-| Dataset | Download |
-| ---     | ---   |
-| dataset-A | [download]() |
-| dataset-B | [download]() |
-| dataset-C | [download]() |
-
-## Use
-- for train
-  ```
-  python train.py
-  ```
-- for test
-  ```
-  python test.py
-  ```
-## Pretrained model
-| Model | Download |
-| ---     | ---   |
-| Model-1 | [download]() |
-| Model-2 | [download]() |
-| Model-3 | [download]() |
+- Nodejs
+- Express
+- Docker
+- Kubernetes
+- Skaffold
 
 
 ## Directory Hierarchy
@@ -398,6 +368,6 @@ To start the application locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/s-cart.git
+   git clone https://github.com/muhammedfahis/s-cart/tree/boiler-code
    cd s-cart
 
