@@ -4,7 +4,7 @@ import path from 'path';
 import { User } from '../models/userModel';
 import * as protoLoader from '@grpc/proto-loader';
 
-const PROTO_PATH = path.join(__dirname, '../../proto/auth.proto');
+const PROTO_PATH = path.join(__dirname, 'proto/auth.proto');
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
     keepCase: true,

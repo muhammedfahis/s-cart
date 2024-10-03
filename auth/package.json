@@ -7,13 +7,13 @@
     "start": "ts-node-dev src/index.ts",
     "test": "jest --watchAll --no-cache",
     "test:ci": "jest",
-    "generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/generated --grpc_out=grpc_js:./src/generated --proto_path=./proto auth.proto"
+    "generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/grpc/generated --grpc_out=grpc_js:./src/grpc/generated --proto_path=./src/grpc/proto auth.proto"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fayisorg/common-modules": "^1.0.8",
+    "@fayisorg/common-modules": "^1.0.22",
     "@grpc/grpc-js": "^1.11.3",
     "@grpc/proto-loader": "^0.7.13",
     "@types/cookie-session": "^2.0.49",
