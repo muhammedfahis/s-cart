@@ -1,0 +1,60 @@
+.App {
+  text-align: center;
+}
+
+.Padding-Top-75px {
+  padding-top: 75px !important;
+}
+
+textarea {
+  resize: none;
+}
+
+.Loader {
+  position: absolute;
+  margin-left: 43%;
+  margin-top: 15%;
+}
+
+.root-component {
+  margin: 0px;
+  min-height: 100vh;
+  background: #eceff1;
+  background: linear-gradient(
+    158deg,
+    rgb(224, 224, 224) 0%,
+    rrgb(233, 237, 254) 100%
+  );
+  /* background: aliceblue; */
+}
+
+.user-image {
+  display: inline-block;
+  padding: 9px;
+  border: solid 0px #027fa3;
+  border-radius: 50%;
+  background-color: #027fa3;
+  color: #fff;
+}
+
+iframe#webpack-dev-server-client-overlay {
+  display: none !important;
+}
+
+body {
+  overflow-y: scroll; 
+  overflow-x: hidden;
+}
+
+ body::-webkit-scrollbar {
+  width: 0px; 
+  background: transparent; 
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #888;
+} 
