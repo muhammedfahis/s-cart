@@ -14,7 +14,7 @@ describe('user signup',() => {
             lastName: 'User'
         }
         const response = await request(app)
-            .post('/api/user/create')
+            .post('/api/users/create')
             .send(requestBody)
         expect(response.statusCode).toEqual(201);
         expect(response.body).toMatchObject({
@@ -33,7 +33,7 @@ describe('user signup',() => {
             lastName: 'User'
         }
         const response = await request(app)
-            .post('/api/user/create')
+            .post('/api/users/create')
             .send(requestBody)
         expect(response.statusCode).toEqual(400);
     });
@@ -41,7 +41,7 @@ describe('user signup',() => {
     test('should throw error for existing user',async() => {
         const user = await global.createUser();
         const response = await request(app)
-            .post('/api/user/create')
+            .post('/api/users/create')
             .send(user)
         expect(response.statusCode).toEqual(400);
     });
@@ -52,7 +52,7 @@ describe('user login',() => {
     test('should login successfully',async() => {
         const user = await global.createUser(); 
         const response = await request(app)
-           .post('/api/user/login')
+           .post('/api/users/login')
            .send({ email: user.email, password: user.password })
         expect(response.statusCode).toEqual(200);
         expect(response.body).toHaveProperty('id');
@@ -64,7 +64,7 @@ describe('user login',() => {
 
     test('should throw error for invalid credentials',async() => {
         const response = await request(app)
-           .post('/api/user/login')
+           .post('/api/users/login')
            .send({ email: 'test@test.com', password: 'wrong' })
         expect(response.statusCode).toEqual(400);
     });
@@ -74,7 +74,7 @@ describe('user logout',() => {
     test('should logout successfully',async() => {
         const token =  global.signup();
         const response = await request(app)
-           .post('/api/user/logout')
+           .post('/api/users/logout')
            .set('Cookie', token)
         expect(response.statusCode).toEqual(200);
         expect(response.body).toMatchObject({
@@ -87,11 +87,11 @@ describe('block user',() => {
     test('should block user successfully',async() => {
         const user = await global.createUser();
         const loginResponse = await request(app)
-            .post('/api/user/login')
+            .post('/api/users/login')
             .send({ email: user.email, password: user.password });   
         const cookie = loginResponse.headers['set-cookie'];
         const response = await request(app)
-           .post('/api/user/block/'+ user.id)
+           .post('/api/users/block/'+ user.id)
            .set('Cookie', cookie)
            .send()
         expect(response.statusCode).toEqual(200);
@@ -100,3 +100,21 @@ describe('block user',() => {
         });
     });
 });
+
+describe('unblock user',() => {
+    test('should unblock user successfully',async() => {
+        const user = await global.createUser();
+        const loginResponse = await request(app)
+            .post('/api/users/login')
+            .send({ email: user.email, password: user.password });   
+        const cookie = loginResponse.headers['set-cookie'];
+        const response = await request(app)
+           .post('/api/users/unblock/'+ user.id)
+           .set('Cookie', cookie)
+           .send()
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toMatchObject({
+            message: 'User unblocked successfully'
+        });
+    });
+})

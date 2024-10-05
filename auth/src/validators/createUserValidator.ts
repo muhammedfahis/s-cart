@@ -19,7 +19,7 @@ export const createUserValidator = [
    .isLength({ min: 2, max: 50 })
    .withMessage('Last name must be between 2 and 50 characters long'),
    (req:Request, res:Response, next:NextFunction) => {
-    console.log('createUserValidation middleware executed');
+    console.log('createUserValidator middleware executed');
     next();
   }
 ];

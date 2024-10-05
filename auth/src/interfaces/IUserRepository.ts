@@ -7,4 +7,5 @@ export interface IUserRepository {
     findOne(id: string): Promise<IUser | null>;
     findExistingUser(email: string): Promise<IUser | null>;
     blockUser(id: string): Promise<IUser | null>;
+    unBlockUser(id: string): Promise<IUser | null>;
 }

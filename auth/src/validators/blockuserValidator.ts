@@ -7,7 +7,7 @@ export const blockUserValidator = [
     .custom((id: string) => mongoose.Types.ObjectId.isValid(id))
     .withMessage('Please enter a valid id'),
    (req:Request, res:Response, next:NextFunction) => {
-    console.log('createUserValidation middleware executed');
+    console.log('blockUserValidator middleware executed');
     next();
   }
 ];

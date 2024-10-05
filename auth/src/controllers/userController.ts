@@ -2,6 +2,7 @@ import { IUserInteractor } from "../interfaces/IUserInteractor";
 import { inject, injectable } from "inversify";
 import { INTERFACE_TYPE } from "../utils/appCont";
 import { BadRequestError } from "@fayisorg/common-modules";
+import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 
 @injectable()
@@ -11,7 +12,7 @@ export class UserController {
         this.userInteractor = userInteractor;
     }
 
-    async createUser(req: any, res: any, next: any) {
+    async createUser(req: Request, res: Response, next: NextFunction) {
        try {
         const { email, password, firstName, lastName, status= true } = req.body;
         const existingUser = await this.userInteractor.findExistingUser(email);
@@ -26,7 +27,7 @@ export class UserController {
        }
     }
 
-    async login(req: any, res: any, next: any) {
+    async login(req: Request, res: Response, next: NextFunction) {
         try {
         const { email, password } = req.body;
         const { user, token } = await this.userInteractor.login(email, password);
@@ -37,17 +38,27 @@ export class UserController {
         }
     }
 
-    async logout(req: any, res: any, next: any) {
+    async logout(req: Request, res: Response, next: NextFunction) {
         console.log(req.currentUser);
         req.session = null;
         res.status(200).send({ message: 'Logged out successfully' });
     }
 
-    async blockUser(req: any, res: any, next: any) {
+    async blockUser(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
             const user = await this.userInteractor.blockUser(id);
             res.status(200).send({ message: 'User blocked successfully' });
+        } catch (error:mongoose.Error.ValidationError | any) {
+            next(new BadRequestError(error.message));
+        }
+    }
+
+    async unBlockUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const user = await this.userInteractor.unblockUser(id);
+            res.status(200).send({ message: 'User unblocked successfully' });
         } catch (error:mongoose.Error.ValidationError | any) {
             next(new BadRequestError(error.message));
         }

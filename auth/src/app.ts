@@ -23,32 +23,32 @@ app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });
 
-(async() => {
-    const producer =  new KafkaProducer();
-    await producer.publish({
-        topic: 'Auth_Events',
-        headers:{},
-        event: Topics.TEST,
-        message: {
-            userId: '123',
-            action: 'login'
-        }
-    });
+// (async() => {
+//     const producer =  new KafkaProducer();
+//     await producer.publish({
+//         topic: 'Auth_Events',
+//         headers:{},
+//         event: Topics.TEST,
+//         message: {
+//             userId: '123',
+//             action: 'login'
+//         }
+//     });
 
-    const kafkaConsumer = new KafkaConsumer();
+//     const kafkaConsumer = new KafkaConsumer();
 
  
-    const handleOrderEvents = async (message: MessageType): Promise<void> => {
-        console.log('Received message:', message);
+//     const handleOrderEvents = async (message: MessageType): Promise<void> => {
+//         console.log('Received message:', message);
     
-        // Implement your business logic here
-        // For example, process the order event
-    };
-   setTimeout( async() => {
-    await kafkaConsumer.subscribe(handleOrderEvents,'Auth_Events');
-   },5000)
+//         // Implement your business logic here
+//         // For example, process the order event
+//     };
+//    setTimeout( async() => {
+//     await kafkaConsumer.subscribe(handleOrderEvents,'Auth_Events');
+//    },5000)
     
-})()
+// })()
 
 app.use(errorHandler as express.ErrorRequestHandler);
 
