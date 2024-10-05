@@ -20,6 +20,7 @@ app.use(
 
 app.use(currentUser);
 app.use(validateUser());
+//
 app.use('/api/products',ProductRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
