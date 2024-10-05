@@ -1,6 +1,35 @@
+import { Request, Response, NextFunction } from 'express';
+import { BadRequestError, NotAuthroizedError } from '@fayisorg/common-modules'; // Assuming these are imported from your common modules
+
+jest.mock('@fayisorg/common-modules', () => {
+  const originalModule = jest.requireActual('@fayisorg/common-modules');
+  return {
+    ...originalModule,
+    validateUser: jest.fn(() => {
+      return (req: Request, res: Response, next: NextFunction) => {
+        if (!req.currentUser) {
+          return next();
+        }
+        // Simulate successful user validation
+        // req.currentUser = {
+        //   id: 'mocked-user-id',
+        //   email: 'test@gmail.com'
+        //   // Add other properties as needed
+        // };
+        next();
+      };
+    }),
+    BadRequestError: jest.fn(),
+    NotAuthroizedError: jest.fn(),
+  };
+});
+
+// In your test file
+import { validateUser } from '@fayisorg/common-modules';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+
 
 
 
@@ -15,6 +44,9 @@ beforeAll( async () => {
     const mongoUri = mongoServer.getUri();
 
     await mongoose.connect(mongoUri);
+    // mockedValidateUser.mockImplementationOnce(() => (req: any, res: any, next: any) => {
+    //     next(); // Proceed to the next middleware/controller
+    // });
 });
 
 beforeEach( async() => {
