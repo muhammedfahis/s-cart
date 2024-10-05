@@ -47,8 +47,11 @@ app.all('*', (req, res, next) => {
 //    setTimeout( async() => {
 //     await kafkaConsumer.subscribe(handleOrderEvents,'Auth_Events');
 //    },5000)
-    
-// })()
+//})()
+//
+
+
+
 
 app.use(errorHandler as express.ErrorRequestHandler);
 
