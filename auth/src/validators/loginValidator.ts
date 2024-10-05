@@ -11,7 +11,7 @@ export const loginValidator = [
     .isEmpty()
     .withMessage('Please enter valid email'),
    (req:Request, res:Response, next:NextFunction) => {
-    console.log('createUserValidation middleware executed');
+    console.log('loginValidator middleware executed');
     next();
   }
 ];

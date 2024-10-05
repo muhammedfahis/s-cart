@@ -5,4 +5,5 @@ export interface IUserInteractor {
    login(email: string, password: string): Promise<{ user:IUser, token:string }>;
    findExistingUser(email: string): Promise<IUser | null>;
    blockUser(id:string): Promise<IUser | null>;
+   unblockUser(id:string): Promise<IUser | null>;
 }

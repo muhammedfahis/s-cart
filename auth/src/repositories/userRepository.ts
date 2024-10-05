@@ -7,6 +7,10 @@ import { User as IUser } from '../entities/User';
 
 @injectable()
 export class UserRepository implements IUserRepository {
+    async unBlockUser(id: string): Promise<IUser | null> {
+        const user = await User.findByIdAndUpdate(id, { status: true }, { new: true });
+        return user;
+    }
     async blockUser(id: string): Promise< IUser | null> {
         const user = await User.findByIdAndUpdate(id, { status: false }, { new: true });
         return user;
