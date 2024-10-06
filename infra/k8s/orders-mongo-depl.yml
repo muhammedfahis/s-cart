@@ -15,8 +15,41 @@ spec:
       containers:
       - name: orders-mongo
         image: mongo:4.2.13
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            # Start MongoDB with replica set enabled
+            mongod --replSet rs0 --bind_ip_all --port 27017 &
+            PID=$!
+            
+            # Wait for MongoDB to start
+            until mongo --eval "print(\"waited for connection\")"
+            do
+                sleep 1
+            done
+            
+            # Initiate the replica set
+            mongo --eval '
+                rs.initiate({
+                    _id: "rs0",
+                    members: [{ _id: 0, host: "orders-mongo-svc:27017" }]
+                })
+            '
+            
+            # Wait for the replica set to be fully initialized
+            mongo --eval 'rs.status()'
+            
+            # Keep the main process running
+            wait $PID
         ports:
         - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        emptyDir: {} # Use PersistentVolumeClaim for data persistence in production
+
 ---
 
 
