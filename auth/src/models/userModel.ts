@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema<UserDoc>({
     lastName: { type: String, required: true },
     status: { type: Boolean, default: true },
 },{
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
         transform: (doc, ret) => {
             delete ret.__v;

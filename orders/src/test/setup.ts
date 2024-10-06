@@ -1,4 +1,31 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { Request, Response, NextFunction } from 'express';
+
+
+jest.mock('@fayisorg/common-modules', () => {
+    const originalModule = jest.requireActual('@fayisorg/common-modules');
+    return {
+        ...originalModule,
+        validateUser: jest.fn(() => {
+            return (req: Request, res: Response, next: NextFunction) => {
+                if (!req.currentUser) {
+                    return next();
+                }
+                // Simulate successful user validation
+                // req.currentUser = {
+                //   id: 'mocked-user-id',
+                //   email: 'test@gmail.com'
+                //   // Add other properties as needed
+                // };
+                next();
+            };
+        }),
+        BadRequestError: jest.fn(),
+        NotAuthroizedError: jest.fn(),
+    };
+});
+
+
+import { MongoMemoryReplSet, MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
@@ -6,34 +33,35 @@ import jwt from 'jsonwebtoken';
 
 declare global {
     var signup: () => string[];
-  }
+}
 
-let mongoServer:any;
-beforeAll( async () => {
-    process.env.JWT_KEY ='asdf';
-    mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
+let mongo: MongoMemoryReplSet;
+beforeAll(async () => {
+    mongo = await MongoMemoryReplSet.create({
+        replSet: { count: 1 }, // Set the replica set with one member
+    });
+    process.env.JWT_KEY = 'asdf';
+    const mongoUri = mongo.getUri();
 
     await mongoose.connect(mongoUri);
 });
 
-beforeEach( async() => {
+beforeEach(async () => {
     const collections = await mongoose.connection.db?.collections();
-    if(collections) {
-        for(const collection of collections) {
+    if (collections) {
+        for (const collection of collections) {
             await collection.deleteMany({});
         }
     }
 });
 
 afterAll(async () => {
-    if(mongoServer) {
-        await mongoServer.stop();
-    }
+    await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
+    await mongo.stop();
 });
 
-global.signup  = () => {
+global.signup = () => {
     const payload = {
         email: 'fahisccc2@gmail.com',
         id: new mongoose.Types.ObjectId().toHexString(),

@@ -1,24 +1,24 @@
 import express from 'express';
-import { Container } from "inversify";
-import { IOrderRepository } from '../interfaces/IOrderRepository';
 import { INTERFACE_TYPE } from '../utils/appCont';
-import { OrderRepository } from '../repositories/orderRepository';
-import { IOrderInteractor } from '../interfaces/IOrderInteractor';
-import { OrderInteractor } from '../interactors/orderInteractor';
 import { OrderController } from '../controllers/orderController';
+import { appContainer as container } from '../appContainer';
+import { createOrderValidator } from '../validators/createOrderValidator';
+import { requireAuth, validateRequest } from '@fayisorg/common-modules';
+import { getOrderValidator } from '../validators/getOrderValidator';
+import { updateOrderStatusValidator } from '../validators/updateOrderStatusValidator';
 
 
 
-const container = new Container();
 
-container.bind<IOrderRepository>(INTERFACE_TYPE.OrderRepository).to(OrderRepository);
-container.bind<IOrderInteractor>(INTERFACE_TYPE.OrderInteractor).to(OrderInteractor);
-container.bind(INTERFACE_TYPE.OrderController).to(OrderController);
 
 const router = express.Router();
 
 const controller = container.get<OrderController>(INTERFACE_TYPE.OrderController);
 
-router.get('/list',controller.getOrder)
+router.post('/',createOrderValidator,validateRequest,requireAuth,controller.createOrder.bind(controller));
+router.get('/',requireAuth,controller.getAllOrders.bind(controller));
+router.get('/:id',getOrderValidator,validateRequest,requireAuth,controller.getOrderById.bind(controller));
+router.patch('/:id',updateOrderStatusValidator,validateRequest,requireAuth,controller.updateOrderStatus.bind(controller));
+
 
 export { router as OrderRouter} ;

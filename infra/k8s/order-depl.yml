@@ -17,7 +17,7 @@ spec:
           image: muhammedfayiscc/s-cart-orders
           env:
             - name: MONGO_URI
-              value: mongodb://orders-mongo-svc:27017/orders
+              value: mongodb://orders-mongo-svc:27017/orders?replicaSet=rs0
             - name: KAFKA_CLIENT_ID
               value: kafka:9092
             - name: JWT_KEY

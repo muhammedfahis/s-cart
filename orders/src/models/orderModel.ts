@@ -1,14 +1,21 @@
 import mongoose from "mongoose";
-
-
+import { OrderStatus } from "../entities/Order";
 
 
 export interface OrderAttr {
-  
+    total_price: number,
+    customer_id: string,
+    ordered_date: Date,
+    status: OrderStatus,
 }
 
 export interface OrderDoc extends mongoose.Document {
-
+    total_price: number,
+    customer_id: string,
+    ordered_date: Date,
+    status: OrderStatus,
+    created_at: Date,
+    updated_at: Date,
 }
 export interface OrderModel extends mongoose.Model<OrderDoc> {
     build(attr: OrderAttr): OrderDoc;
@@ -16,8 +23,25 @@ export interface OrderModel extends mongoose.Model<OrderDoc> {
 
 
 const orderSchema = new mongoose.Schema<OrderDoc>({
-
+    total_price: {
+        type: Number,
+        required: true
+    },
+    customer_id: {
+        type: String,
+        required: true
+    },
+    ordered_date: {
+        type: Date,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: Object.values(OrderStatus),
+        required: true
+    }
 },{
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
         transform: (doc, ret) => {
             delete ret.__v;
@@ -28,6 +52,15 @@ const orderSchema = new mongoose.Schema<OrderDoc>({
     }
 });
 
+orderSchema.virtual('orderItems', {
+    ref: 'OrderItem', // The model to use
+    localField: '_id', // Find OrderItems where `order_id` equals `_id` of Order
+    foreignField: 'order_id' // The field in OrderItem that references Order
+});
+
+// 8. Ensure that virtuals are included when converting to JSON
+orderSchema.set('toObject', { virtuals: true });
+orderSchema.set('toJSON', { virtuals: true });
 
 
 orderSchema.statics.build = (attr: OrderDoc): OrderDoc => new Order(attr);
