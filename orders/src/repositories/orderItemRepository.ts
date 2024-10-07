@@ -60,7 +60,8 @@ export class OrderItemRepository implements IOrderItemRepository {
     await OrderItem.bulkSave(newOrderItems, options);
     return newOrderItems.map(items => ({
         ...items,
-        order_id: items.order_id.toString()
+        order_id: items.order_id.toString(),
+        product_id: items.product_id.toString(),
     }));
   }
 

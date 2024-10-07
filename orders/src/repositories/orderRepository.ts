@@ -2,12 +2,12 @@ import { injectable } from "inversify";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { Order as IOrder, OrderStatus } from "../entities/Order";
 import { Order } from "../models/orderModel";
+import { ProductDoc } from "../models/productModel";
 
 
 @injectable()
 export class OrderRepository implements IOrderRepository {
    async create(order: IOrder): Promise<IOrder> {
-        console.log(order,'orderRep')
         const newOrder = await Order.build(order).save();
         return newOrder;
     }
@@ -15,7 +15,11 @@ export class OrderRepository implements IOrderRepository {
         return await Order.find()
         .populate({
             path: 'orderItems',
-            model: 'OrderItem'
+            model: 'OrderItem',
+            populate: {
+                path: 'product_id',
+                model: 'Product'
+            } 
         })
         .exec();
     }
@@ -23,7 +27,11 @@ export class OrderRepository implements IOrderRepository {
         return await Order.findById(id)
         .populate({
             path: 'orderItems',
-            model: 'OrderItem'
+            model: 'OrderItem',
+            populate: {
+                path: 'product_id',
+                model: 'Product'
+            }
         })
        .exec();
     }

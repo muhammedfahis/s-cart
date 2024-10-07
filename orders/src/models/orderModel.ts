@@ -66,4 +66,4 @@ orderSchema.set('toJSON', { virtuals: true });
 orderSchema.statics.build = (attr: OrderDoc): OrderDoc => new Order(attr);
 
 
-export const Order = mongoose.model<OrderDoc, OrderModel>("User", orderSchema);
+export const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
