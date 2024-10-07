@@ -9,7 +9,7 @@ export interface OrderItemAttr {
 }
 
 export interface OrderItemDoc extends mongoose.Document {
-    product_id: string;
+    product_id: mongoose.Types.ObjectId;
     quantity: number;
     unit_price: number;
     order_id: mongoose.Types.ObjectId;
@@ -25,7 +25,8 @@ export interface OrderItemModel extends mongoose.Model<OrderItemDoc> {
 
 const orderItemSchema = new mongoose.Schema<OrderItemDoc, OrderItemModel>({
     product_id: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref:'Product',
         required: true
     },
     quantity: {
@@ -52,7 +53,8 @@ const orderItemSchema = new mongoose.Schema<OrderItemDoc, OrderItemModel>({
             ret.id = ret._id;
             delete ret._id;
             delete ret.__v;
-            ret.order_id = ret.order_id.toString()
+            ret.order_id = ret.order_id.toString();
+            // ret.product_id = ret.product_id.toString();
             return ret;
         }
     }
@@ -62,6 +64,7 @@ orderItemSchema.statics.build = function(attr: OrderItemAttr): OrderItemDoc {
     return new OrderItem({
         ...attr,
         order_id: new mongoose.Types.ObjectId(attr.order_id),
+        product_id: new mongoose.Types.ObjectId(attr.product_id),
     });
 };
 
@@ -69,6 +72,7 @@ orderItemSchema.statics.buildMany = function(attrs: OrderItemAttr[]): OrderItemD
     return attrs.map((attr) => new OrderItem({
         ...attr,
         order_id: new mongoose.Types.ObjectId(attr.order_id),
+        product_id: new mongoose.Types.ObjectId(attr.product_id),
     }));
 };
 

@@ -2,7 +2,7 @@ import { IProductInteractor } from "../interfaces/IProductInteractor";
 import { inject, injectable } from "inversify";
 import { INTERFACE_TYPE } from "../utils/appCont";
 import { Request, Response, NextFunction } from "express";
-import { BadRequestError } from "@fayisorg/common-modules";
+import { BadRequestError, KafkaProducer, Topics } from "@fayisorg/common-modules";
 
 
 
@@ -25,6 +25,21 @@ export class ProductController {
                 imageUrl,
                 description
             });
+            const producer =  new KafkaProducer();
+                await producer.publish({
+                    topic: 'Catelog_Events',
+                    headers:{},
+                    event: Topics.CREATE_PRODUCT,
+                    message: {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        quantity: product.quantity,
+                        category: product.category,
+                        imageUrl: product.imageUrl,
+                        description: product.description
+                    }
+                });
             res.status(201).send(product);
         } catch (error) {
             next(error);
@@ -51,6 +66,23 @@ export class ProductController {
                 imageUrl,
                 description
             });
+            if(product) {
+                const producer =  new KafkaProducer();
+                await producer.publish({
+                    topic: 'Catelog_Events',
+                    headers:{},
+                    event: Topics.UPDATE_PRODUCT,
+                    message: {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        quantity: product.quantity,
+                        category: product.category,
+                        imageUrl: product.imageUrl,
+                        description: product.description
+                    }
+                });
+            }
             res.send(product);
         } catch (error) {
             next(error);
@@ -60,6 +92,16 @@ export class ProductController {
     async deleteProduct(req: Request, res: Response, next: NextFunction){
         try {
             await this.productInteractor.deleteProduct(req.params.id);
+            const producer =  new KafkaProducer();
+            await producer.publish({
+                topic: 'Catelog_Events',
+                headers:{},
+                event: Topics.DELETE_PRODUCT,
+                message: {
+                    id: req.params.id,
+                
+                }
+            });
             res.status(204).send({ message: 'Product deleted successfully' });
         } catch (error) {
             next(error);
