@@ -370,4 +370,7 @@ To start the application locally:
    ```bash
    git clone https://github.com/muhammedfahis/s-cart/tree/boiler-code
    cd s-cart
+2. Run Skaffold
+   ```bash
+   skaffold dev
 
