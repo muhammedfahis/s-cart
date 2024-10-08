@@ -17,6 +17,8 @@ export class Order {
       public ordered_date: Date,
       public status:OrderStatus,
       public id?: string,
-      public items?: OrderItem[]
+      public items?: OrderItem[],
+      public createdAt?: Date,
+      public updatedAt?: Date,
    ) {}
 }

@@ -1,5 +1,6 @@
 import { body } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 
 export const createOrderValidator = [
     body('items')
@@ -8,8 +9,8 @@ export const createOrderValidator = [
 
   // Validate each item in the 'items' array
   body('items.*.product_id')
-    .isString()
-    .withMessage('Product ID must be a string'),
+  .custom((input) => mongoose.Types.ObjectId.isValid(input))
+    .withMessage('Product Provide a valid Product ID'),
 
   body('items.*.unit_price')
     .isFloat({ gt: 0 })
@@ -24,18 +25,5 @@ export const createOrderValidator = [
     next();
   }
 ];
-// {
-//     "items":[
-//       {
-//         "product_id" :"asgsfag",
-//         "unit_price":20,
-//         "quantity":2
-//       },
-//           {
-//         "product_id" :"asgsasdfas",
-//         "unit_price":40,
-//         "quantity":5
-//       }
-//       ]
-//   }
+
 

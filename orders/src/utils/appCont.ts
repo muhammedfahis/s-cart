@@ -7,4 +7,7 @@ export const INTERFACE_TYPE = {
     OrderItemRepository: Symbol.for('OrderItemRepository'),
     ProductRepository: Symbol.for('ProductRepository'),
     ProductInteractor: Symbol.for('ProductInteractor'),
+    CartInteractor: Symbol.for('CartInteractor'),
+    CartRepository: Symbol.for('CartRepository'),
+    CartController: Symbol.for('CartController'),
 }

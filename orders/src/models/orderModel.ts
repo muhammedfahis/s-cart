@@ -14,8 +14,8 @@ export interface OrderDoc extends mongoose.Document {
     customer_id: string,
     ordered_date: Date,
     status: OrderStatus,
-    created_at: Date,
-    updated_at: Date,
+    createdAt: Date,
+    updatedAt: Date,
 }
 export interface OrderModel extends mongoose.Model<OrderDoc> {
     build(attr: OrderAttr): OrderDoc;
@@ -39,9 +39,16 @@ const orderSchema = new mongoose.Schema<OrderDoc>({
         type: String,
         enum: Object.values(OrderStatus),
         required: true
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 },{
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
         transform: (doc, ret) => {
             delete ret.__v;

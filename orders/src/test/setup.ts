@@ -1,10 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-
+import { Product as IProduct } from '../entities/Product';
 
 jest.mock('@fayisorg/common-modules', () => {
     const originalModule = jest.requireActual('@fayisorg/common-modules');
     return {
         ...originalModule,
+        KafkaConsumer: class {
+            constructor() {
+                return new originalModule.KafkaConsumer();
+            }
+            subscribe() {
+                return;
+            }
+        },
         validateUser: jest.fn(() => {
             return (req: Request, res: Response, next: NextFunction) => {
                 if (!req.currentUser) {
@@ -28,11 +36,14 @@ jest.mock('@fayisorg/common-modules', () => {
 import { MongoMemoryReplSet, MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { Product } from '../models/productModel';
+import { KafkaConsumer } from '@fayisorg/common-modules';
 
 
 
 declare global {
     var signup: () => string[];
+    var generateProduct:() => Promise<IProduct>;
 }
 
 let mongo: MongoMemoryReplSet;
@@ -70,5 +81,19 @@ global.signup = () => {
     const JsonToken = JSON.stringify({ jwt: token });
     const base64Token = Buffer.from(JsonToken).toString('base64');
     return [`session=${base64Token}`];
+}
+
+global.generateProduct = async () => {
+    const product = Product.build({
+        category:'test',
+        name:'test_name',
+        description:'test_description',
+        price:20,
+        quantity:100,
+        imageUrl: 'google.com',
+        _id: new mongoose.Types.ObjectId()
+    })
+    await product.save();
+    return product;
 }
 

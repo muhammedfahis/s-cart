@@ -3,5 +3,5 @@ import { Order as IOrder } from '../entities/Order';
 
 export interface IOrderItemRepository {
     create(order: IOrderItem[],options?:any): Promise<IOrderItem[]>;
-    createWithTransaction(order:IOrder, orderItems: IOrderItem[]): Promise<IOrder>;
+    createWithTransaction(order:IOrder): Promise<IOrder>;
 }
