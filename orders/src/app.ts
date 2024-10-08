@@ -29,7 +29,9 @@ app.use('/api/cart',CartRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });
-
+(async() => {
+    console.log(await Product.find({}));
+})();
 startKafkaConsumer();
 
 app.use(errorHandler as express.ErrorRequestHandler);

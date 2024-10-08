@@ -7,4 +7,5 @@ export interface IProductInteractor {
     createProduct(product: IProduct): Promise<IProduct>;
     updateProduct(id: string, product: IProduct): Promise<IProduct | null>;
     deleteProduct(id: string): Promise<void>;
+    updateStock(product: { product_id: string, quantity: number }[]): Promise<void>;
 }

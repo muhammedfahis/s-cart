@@ -7,4 +7,5 @@ export interface IOrderInteractor {
     getAllOrders(): Promise<IOrder[]>;
     getOrderById(id: string): Promise<IOrder | null>;
     updateOrderStatus(id: string, status: OrderStatus): Promise<IOrder | null>;
+    updateStock(products: IOrderItem[]): Promise<void>
 }

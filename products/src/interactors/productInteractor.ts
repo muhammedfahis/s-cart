@@ -11,6 +11,19 @@ export class ProductInteractor implements IProductInteractor {
     constructor(@inject(INTERFACE_TYPE.ProductRepository) productRepository: IProductRepository) {
         this.productRepository = productRepository;
     }
+    async updateStock(product: { product_id: string, quantity: number }[]): Promise<void> {
+       await Promise.all(product.map( async proItem => {
+        const existingProduct = await this.productRepository.findById(proItem.product_id);
+        if(!existingProduct) {
+            throw new Error('Product not found');
+        }
+        console.log(proItem.quantity,'qlentity');
+        
+        existingProduct.quantity += proItem.quantity;
+        await this.productRepository.updateStock(existingProduct)
+       }))
+        return;
+    }
    async getAllProducts(): Promise<Product[]> {
         return await this.productRepository.findAll();
     }

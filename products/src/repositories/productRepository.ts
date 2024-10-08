@@ -6,6 +6,10 @@ import { Product } from "../models/productModel";
 
 @injectable()
 export class ProductRepository implements IProductRepository {
+    async updateStock(product: IProduct): Promise<void> {
+        const updatedProduct = await Product.findByIdAndUpdate(product.id, { quantity: product.quantity }, { new: true }).exec();
+        return;
+    }
    async findExistingProduct(name: string, category: string): Promise<IProduct | null> {
         return await Product.findOne({ name, category }).exec();
     }

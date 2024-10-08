@@ -2,15 +2,25 @@ import  { BadRequestError, KafkaConsumer, MessageType, Topics } from "@fayisorg/
 import { ProductInteractor } from "./interactors/productInteractor";
 import { ProductRepository } from "./repositories/productRepository";
 import { Product as IProduct } from "./entities/Product";
+import { OrderInteractor } from "./interactors/orderInteractor";
+import { OrderRepository } from "./repositories/orderRepository";
+import { OrderItemRepository } from "./repositories/orderItemRepository";
+import { OrderItem as IOrderItem } from "./entities/OrderItem";
 
 
+export interface ProductData {
+    product_id: string,
+    quantity: number
+}
+export interface OrderMessageData {
+    items?: ProductData[]
+}
 
 
 export const startKafkaConsumer = async () => {
     const kafkaConsumer = new KafkaConsumer();
     const handleProductEvents = async (message: MessageType): Promise<void> => {
         console.log('Received message:', message);
-        console.log(Topics.UPDATE_PRODUCT === message.event);
         try {
             switch (message.event) {
                 case Topics.CREATE_PRODUCT:
@@ -41,6 +51,10 @@ export const startKafkaConsumer = async () => {
                         id: message.data.id,
                     } as IProduct);
                     break;
+                case Topics.ORDER_EXPIRED:
+                    const expiredProductData: IOrderItem[] = [...(message.data as any).items] as IOrderItem[]
+                    await handleUpdateStock(expiredProductData);
+                    break;
 
                 default:
                     console.warn(`Unhandled event type: ${message.event}`);
@@ -50,7 +64,8 @@ export const startKafkaConsumer = async () => {
             // Implement retry logic or send to a dead-letter queue if needed
         }
     };
-await kafkaConsumer.subscribe(handleProductEvents,'Catelog_Events');
+kafkaConsumer.subscribe(handleProductEvents,'Catelog_Events');
+kafkaConsumer.subscribe(handleProductEvents,'Order_Events');
 }
 
 async function handleCreateProduct (data: IProduct) {
@@ -81,4 +96,13 @@ async function handleUpdateProduct (data: IProduct) {
 async function handleDeleteProduct (data: IProduct) {
     const productInteractor = new ProductInteractor(new ProductRepository());
     await productInteractor.deleteProduct(String(data.id));
+}
+
+async function handleUpdateStock(data: IOrderItem[]) {
+    const productRepository = new ProductRepository();
+    data = data.map(product => {
+        product.quantity = Math.abs(Number(product.quantity));
+        return product;
+    })
+    await productRepository.updateStock(data);
 }
