@@ -6,6 +6,7 @@ import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, validateUser, NotFoundError } from '@fayisorg/common-modules';
 
 import { ProductRouter} from './routes/product';
+import { startKafkaConsumer } from './helper';
 
 
 const app = express();
@@ -26,7 +27,7 @@ app.use('/api/products',ProductRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });
-
+startKafkaConsumer();
 app.use(errorHandler as express.ErrorRequestHandler);
 
 export { app } ;

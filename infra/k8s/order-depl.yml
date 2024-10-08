@@ -19,7 +19,11 @@ spec:
             - name: MONGO_URI
               value: mongodb://orders-mongo-svc:27017/orders?replicaSet=rs0
             - name: KAFKA_CLIENT_ID
-              value: kafka:9092
+              value: "order-service-consumer-1" # You can use unique identifiers per replica if needed
+            - name: KAFKA_BROKERS
+              value: "kafka-depl-0.kafka-headless.default.svc.cluster.local:9092"
+            - name: GROUP_ID
+              value: "order-service-group"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

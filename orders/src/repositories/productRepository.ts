@@ -1,12 +1,24 @@
 import { injectable } from "inversify";
 import { Product } from "../models/productModel";
 import { Product as IProduct } from "../entities/Product";
+import { OrderItem as IOrderItem } from "../entities/OrderItem";
 
 import { IProductRepository } from "../interfaces/IProductRepository";
 import mongoose from "mongoose";
 
 @injectable()
 export class ProductRepository implements IProductRepository {
+   async updateStock(products:IOrderItem[]): Promise<void> {
+    console.log(products,"data2");
+    const bulkOps = products.map(product => ({
+        updateOne: {
+          filter: { _id: new mongoose.Types.ObjectId(product.product_id) },
+          update: { $inc: { quantity: product.quantity } },
+        }
+      }));
+      const result = await Product.bulkWrite(bulkOps);
+      return;
+    }
    async delete(id: string): Promise<void> {
         await Product.deleteOne({ _id: id });
     }

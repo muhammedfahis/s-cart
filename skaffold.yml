@@ -48,3 +48,11 @@ build:
         manual:
           - src: "src/**/*.js"
             dest: "."
+    - image: muhammedfayiscc/s-cart-expiration
+      context: ./expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: "."

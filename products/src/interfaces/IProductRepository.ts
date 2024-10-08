@@ -10,4 +10,5 @@ export interface IProductRepository {
    findAll(): Promise<IProduct[]>;
    searchByCategory(category: string): Promise<IProduct[]>;
    findExistingProduct(name: string,category:string): Promise<IProduct | null>;
+   updateStock(product: IProduct): Promise<void>
 }

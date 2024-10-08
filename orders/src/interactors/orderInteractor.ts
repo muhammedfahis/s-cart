@@ -24,6 +24,14 @@ export class OrderInteractor implements IOrderInteractor {
         this.productRepository = productRepository;
 
     }
+    async updateStock(products: IOrderItem[]): Promise<void> {
+        products = products.map(product => {
+            product.quantity = -product.quantity;
+            return product;
+        })
+       await this.productRepository.updateStock(products);
+        return;
+    }
     async createOrder(customer_id: string, orderItems: IOrderItem[]): Promise<IOrder> {
         const ordered_date = new Date();
         const status = OrderStatus.Placed;
@@ -45,6 +53,7 @@ export class OrderInteractor implements IOrderInteractor {
             items: refactoredOrderItem
         }
         const newOrder = await this.orderItemRepository.createWithTransaction(orderData);
+        await this.updateStock(refactoredOrderItem)
         return newOrder;
     }
     async getAllOrders(): Promise<IOrder[]> {

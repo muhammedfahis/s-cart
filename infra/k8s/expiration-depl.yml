@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: muhammedfayiscc/s-cart-expiration
+          env:
+            - name: KAFKA_CLIENT_ID
+              value: "expiration-service-consumer-1" # You can use unique identifiers per replica if needed
+            - name: KAFKA_BROKERS
+              value: "kafka-depl-0.kafka-headless.default.svc.cluster.local:9092"
+            - name: GROUP_ID
+              value: "expiration-service-group"
+            - name: REDIS_HOST
+              value: expiration-redis-svc
+
+---
+
