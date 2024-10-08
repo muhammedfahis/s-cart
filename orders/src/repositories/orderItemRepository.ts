@@ -15,7 +15,7 @@ export class OrderItemRepository implements IOrderItemRepository {
    * @returns The newly created order.
    * @throws Will throw an error if the transaction fails.
    */
-  async createWithTransaction(orderData: IOrder, orderItemsData: IOrderItem[]): Promise<IOrder> {
+  async createWithTransaction(orderData: IOrder): Promise<IOrder> {
     const session: ClientSession = await mongoose.startSession();
     try {
       session.startTransaction();
@@ -27,7 +27,7 @@ export class OrderItemRepository implements IOrderItemRepository {
       }
 
       // Associate order_id with each order item
-      const orderItemsWithOrderId = orderItemsData.map((item) => ({
+      const orderItemsWithOrderId = orderData.items!.map((item) => ({
         ...item,
         order_id: newOrder.id!.toString(),
       }));

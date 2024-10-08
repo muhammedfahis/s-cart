@@ -18,15 +18,8 @@ export class OrderController {
         try {
             let { items } = req.body;
             const customer_id = req.currentUser!.id;
-            const ordered_date = new Date();
-            const status = OrderStatus.Placed;
-            let total_price = 0;
-            items = items.map((item:Record<any,any>) => {
-                item.sub_total = item.unit_price * item.quantity;
-                total_price += item.sub_total;
-                return item;
-            });
-            const order = await this.orderInteractor.createOrder({ total_price, customer_id, status, ordered_date }, items);
+      
+            const order = await this.orderInteractor.createOrder(customer_id, items);
          res.status(201).send(order);
         } catch (error) {
             next(error);

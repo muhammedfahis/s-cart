@@ -8,6 +8,8 @@ import { currentUser, errorHandler, NotFoundError, validateUser } from '@fayisor
 import { OrderRouter } from './routes/order';
 import { startKafkaConsumer } from './helper';
 import { Product } from './models/productModel';
+import { CartRouter } from './routes/cart';
+import { Cart } from './models/cartModel';
 
 
 const app = express();
@@ -23,9 +25,11 @@ app.use(
 app.use(currentUser);
 app.use(validateUser());
 app.use('/api/orders',OrderRouter);
+app.use('/api/cart',CartRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });
+
 startKafkaConsumer();
 
 app.use(errorHandler as express.ErrorRequestHandler);

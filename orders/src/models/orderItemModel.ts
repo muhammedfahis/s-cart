@@ -14,8 +14,8 @@ export interface OrderItemDoc extends mongoose.Document {
     unit_price: number;
     order_id: mongoose.Types.ObjectId;
     sub_total: number;
-    created_at: Date;
-    updated_at: Date;
+    createdAt: Date,
+    updatedAt: Date,
 }
 
 export interface OrderItemModel extends mongoose.Model<OrderItemDoc> {
@@ -45,9 +45,16 @@ const orderItemSchema = new mongoose.Schema<OrderItemDoc, OrderItemModel>({
     sub_total: {
         type: Number,
         required: true
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 }, {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJSON: {
         transform: (doc, ret) => {
             ret.id = ret._id;

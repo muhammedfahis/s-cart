@@ -7,26 +7,22 @@ import { app } from '../../app';
 
 describe('create order', () => {
     test('should create order with 201', async () => {
+        const product = await global.generateProduct()
         const response = await request(app)
             .post('/api/orders/')
             .set('Cookie', global.signup())
             .send({
                 "items": [
                     {
-                        "product_id": "asgsfag",
-                        "unit_price": 20,
-                        "quantity": 2
-                    },
-                    {
-                        "product_id": "asgsasdfas",
-                        "unit_price": 40,
+                        "product_id": product.id,
+                        "unit_price": product.price,
                         "quantity": 2
                     }
                 ]
             })
         expect(response.status).toBe(201);
         expect(response.body.id).toBeDefined();
-        expect(response.body.total_price).toBe(120);
+        expect(response.body.total_price).toBe(40);
     });
 
     test('should throw error with 400', async () => {
@@ -52,19 +48,15 @@ describe('create order', () => {
 
 describe('get order', () => {
     test('should get orders with 200', async () => {
+        const product = await global.generateProduct();
         await request(app)
             .post('/api/orders/')
             .set('Cookie', global.signup())
             .send({
                 "items": [
                     {
-                        "product_id": "asgsfag",
-                        "unit_price": 20,
-                        "quantity": 2
-                    },
-                    {
-                        "product_id": "asgsasdfas",
-                        "unit_price": 40,
+                        "product_id": product.id,
+                        "unit_price": product.price,
                         "quantity": 2
                     }
                 ]
@@ -77,24 +69,20 @@ describe('get order', () => {
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
         expect(response.body[0].id).toBeDefined();
-        expect(response.body[0].total_price).toBe(120);
-        expect(response.body[0].orderItems.length).toBe(2);
+        expect(response.body[0].total_price).toBe(40);
+        expect(response.body[0].orderItems.length).toBe(1);
     });
 
     test('should return a single order item with 200', async () => {
+        const product = await global.generateProduct();
         const newOrder = await request(app)
             .post('/api/orders/')
             .set('Cookie', global.signup())
             .send({
                 "items": [
                     {
-                        "product_id": "asgsfag",
-                        "unit_price": 20,
-                        "quantity": 2
-                    },
-                    {
-                        "product_id": "asgsasdfas",
-                        "unit_price": 40,
+                        "product_id": product.id,
+                        "unit_price": product.price,
                         "quantity": 2
                     }
                 ]
@@ -107,8 +95,8 @@ describe('get order', () => {
 
         expect(order.status).toBe(200);
         expect(order.body.id).toBe(newOrder.body.id);
-        expect(order.body.total_price).toBe(120);
-        expect(order.body.orderItems.length).toBe(2);
+        expect(order.body.total_price).toBe(40);
+        expect(order.body.orderItems.length).toBe(1);
     });
 
     test('should throw error with invalid id', async () => {
@@ -122,19 +110,15 @@ describe('get order', () => {
 
 describe('update order', () => {
     test('should update order with 200', async () => {
+        const product = await global.generateProduct();
         const newOrder = await request(app)
             .post('/api/orders/')
             .set('Cookie', global.signup())
             .send({
                 "items": [
                     {
-                        "product_id": "asgsfag",
-                        "unit_price": 20,
-                        "quantity": 2
-                    },
-                    {
-                        "product_id": "asgsasdfas",
-                        "unit_price": 40,
+                        "product_id": product.id,
+                        "unit_price": product.price,
                         "quantity": 2
                     }
                 ]
@@ -161,19 +145,15 @@ describe('update order', () => {
     });
 
     test('should throw error with invalid status', async () => {
+        const product = await global.generateProduct();
         const newOrder = await request(app)
             .post('/api/orders/')
             .set('Cookie', global.signup())
             .send({
                 "items": [
                     {
-                        "product_id": "asgsfag",
-                        "unit_price": 20,
-                        "quantity": 2
-                    },
-                    {
-                        "product_id": "asgsasdfas",
-                        "unit_price": 40,
+                        "product_id": product.id,
+                        "unit_price": product.price,
                         "quantity": 2
                     }
                 ]

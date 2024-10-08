@@ -15,15 +15,11 @@ export class UserController {
     async createUser(req: Request, res: Response, next: NextFunction) {
        try {
         const { email, password, firstName, lastName, status= true } = req.body;
-        const existingUser = await this.userInteractor.findExistingUser(email);
-        if(existingUser) {
-            throw new BadRequestError('Email in use');
-        }
         const { user , token } = await this.userInteractor.createUser(email, password, firstName, lastName, status);      
         req.session = { jwt: token };
         res.status(201).send(user);
        } catch (error: mongoose.Error.ValidationError | any) {
-        next(new BadRequestError(error.message));
+        next(error);
        }
     }
 
@@ -34,7 +30,7 @@ export class UserController {
         req.session = { jwt: token };
         res.status(200).send(user);
         } catch (error:mongoose.Error.ValidationError | any) {
-            next(new BadRequestError(error.message)); 
+            next(error);
         }
     }
 
@@ -50,7 +46,7 @@ export class UserController {
             const user = await this.userInteractor.blockUser(id);
             res.status(200).send({ message: 'User blocked successfully' });
         } catch (error:mongoose.Error.ValidationError | any) {
-            next(new BadRequestError(error.message));
+            next(error);
         }
     }
 
@@ -60,7 +56,7 @@ export class UserController {
             const user = await this.userInteractor.unblockUser(id);
             res.status(200).send({ message: 'User unblocked successfully' });
         } catch (error:mongoose.Error.ValidationError | any) {
-            next(new BadRequestError(error.message));
+            next(error);
         }
     }
 }

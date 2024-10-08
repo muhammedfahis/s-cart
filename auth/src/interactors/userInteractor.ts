@@ -30,6 +30,10 @@ export class UserInteractor implements IUserInteractor {
         return this.userRepository.findExistingUser(email);
     }
     async createUser(email: string, password: string, firstName: string, lastName: string, status: boolean): Promise<any> {
+        const existingUser = await this.findExistingUser(email);
+        if(existingUser) {
+            throw new BadRequestError('Email in use');
+        }
         const user = await this.userRepository.create(email, password, firstName, lastName, status);
         if (!user) {
             throw new BadRequestError('somthing went wrong');

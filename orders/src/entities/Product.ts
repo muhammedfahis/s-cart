@@ -7,6 +7,8 @@ export class Product {
         public imageUrl?: string,
         public description?: string,
         public id?: string,
+        public createdAt?: Date,
+        public updatedAt?: Date,
     ) {
 
     }
