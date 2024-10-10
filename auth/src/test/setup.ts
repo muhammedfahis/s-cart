@@ -48,7 +48,7 @@ global.signup  = () => {
 global.createUser = async () => {
     const user = User.build({
         email: 'fahisccc2@gmail.com',
-        password: 'test123',
+        password: 'test',
         firstName: 'Fahis',
         lastName: 'Khan',
         status: true,

@@ -4,6 +4,7 @@ import { INTERFACE_TYPE } from "../utils/appCont";
 import { BadRequestError } from "@fayisorg/common-modules";
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
+import { Context } from "../trpc";
 
 @injectable()
 export class UserController {
@@ -12,51 +13,35 @@ export class UserController {
         this.userInteractor = userInteractor;
     }
 
-    async createUser(req: Request, res: Response, next: NextFunction) {
-       try {
-        const { email, password, firstName, lastName, status= true } = req.body;
+    async createUser(input: any,context: Context) {
+        const { email, password, firstName, lastName, status= true } = input;
         const { user , token } = await this.userInteractor.createUser(email, password, firstName, lastName, status);      
-        req.session = { jwt: token };
-        res.status(201).send(user);
-       } catch (error: mongoose.Error.ValidationError | any) {
-        next(error);
-       }
+        context.req.session = { jwt: token };
+        return user;
     }
 
-    async login(req: Request, res: Response, next: NextFunction) {
-        try {
-        const { email, password } = req.body;
+    async login(input: any,context: Context) {
+        const { email, password } = input;
         const { user, token } = await this.userInteractor.login(email, password);
-        req.session = { jwt: token };
-        res.status(200).send(user);
-        } catch (error:mongoose.Error.ValidationError | any) {
-            next(error);
-        }
+        context.req.session = { jwt: token };
+        return user;
     }
 
-    async logout(req: Request, res: Response, next: NextFunction) {
-        console.log(req.currentUser);
-        req.session = null;
-        res.status(200).send({ message: 'Logged out successfully' });
+    async logout(context: Context) {
+        console.log(context.req.currentUser);
+        context.req.session = null;
+        return;
     }
 
-    async blockUser(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { id } = req.params;
-            const user = await this.userInteractor.blockUser(id);
-            res.status(200).send({ message: 'User blocked successfully' });
-        } catch (error:mongoose.Error.ValidationError | any) {
-            next(error);
-        }
+    async blockUser(input: any) {
+        const { id } = input;
+        const user = await this.userInteractor.blockUser(id);
+        return 'Blocked User Successfully.'
     }
 
-    async unBlockUser(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { id } = req.params;
-            const user = await this.userInteractor.unblockUser(id);
-            res.status(200).send({ message: 'User unblocked successfully' });
-        } catch (error:mongoose.Error.ValidationError | any) {
-            next(error);
-        }
+    async unBlockUser(input: any) {
+        const { id } = input;
+        const user = await this.userInteractor.unblockUser(id);
+        return 'Unblocked User Successfully.'
     }
 }
