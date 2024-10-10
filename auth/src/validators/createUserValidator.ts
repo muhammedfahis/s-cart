@@ -27,7 +27,7 @@ import zod from 'zod';
 
 export const createSchema = zod.object({
   email: zod.string().email(),
-  password: zod.string().min(4).max(10),
+  password: zod.string().min(4).max(20),
   firstName: zod.string().min(2).max(50),
   lastName: zod.string().min(2).max(50),
 }, {

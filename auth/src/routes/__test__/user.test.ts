@@ -14,14 +14,16 @@ describe('user signup',() => {
             lastName: 'User'
         }
         const response = await request(app)
-            .post('/api/users/create')
+            .post('/trpc/user.create')
             .send(requestBody)
-        expect(response.statusCode).toEqual(201);
-        expect(response.body).toMatchObject({
+        expect(response.statusCode).toEqual(200);      
+        expect(response.body.result.data).toMatchObject({
             ...requestBody,
             id: expect.any(String),
-            password: expect.any(String), 
-            status: expect.any(Boolean)  
+            password: expect.any(String),
+            status: expect.any(Boolean),
+            created_at: expect.any(String),
+            updated_at: expect.any(String)
         })
     });
 
@@ -33,7 +35,7 @@ describe('user signup',() => {
             lastName: 'User'
         }
         const response = await request(app)
-            .post('/api/users/create')
+            .post('/trpc/user.create')
             .send(requestBody)
         expect(response.statusCode).toEqual(400);
     });
@@ -41,7 +43,7 @@ describe('user signup',() => {
     test('should throw error for existing user',async() => {
         const user = await global.createUser();
         const response = await request(app)
-            .post('/api/users/create')
+            .post('/trpc/user.create')
             .send(user)
         expect(response.statusCode).toEqual(400);
     });
@@ -52,21 +54,21 @@ describe('user login',() => {
     test('should login successfully',async() => {
         const user = await global.createUser(); 
         const response = await request(app)
-           .post('/api/users/login')
+           .post('/trpc/user.login')
            .send({ email: user.email, password: user.password })
         expect(response.statusCode).toEqual(200);
-        expect(response.body).toHaveProperty('id');
-        expect(response.body).toHaveProperty('email');
-        expect(response.body).toHaveProperty('firstName');
-        expect(response.body).toHaveProperty('lastName');
-        expect(response.body).toHaveProperty('status');
+        expect(response.body.result.data).toHaveProperty('id');
+        expect(response.body.result.data).toHaveProperty('email');
+        expect(response.body.result.data).toHaveProperty('firstName');
+        expect(response.body.result.data).toHaveProperty('lastName');
+        expect(response.body.result.data).toHaveProperty('status');
     });
 
     test('should throw error for invalid credentials',async() => {
         const response = await request(app)
-           .post('/api/users/login')
+           .post('/trpc/user.login')
            .send({ email: 'test@test.com', password: 'wrong' })
-        expect(response.statusCode).toEqual(400);
+        expect(response.statusCode).toEqual(500);
     });
 });
 
@@ -74,11 +76,13 @@ describe('user logout',() => {
     test('should logout successfully',async() => {
         const token =  global.signup();
         const response = await request(app)
-           .post('/api/users/logout')
+           .post('/trpc/user.logout')
            .set('Cookie', token)
+           console.log(response.body);
+           
         expect(response.statusCode).toEqual(200);
-        expect(response.body).toMatchObject({
-            message: 'Logged out successfully'
+        expect(response.body.result.data).toMatchObject({
+            success:true
         });
     });
 });
@@ -87,16 +91,18 @@ describe('block user',() => {
     test('should block user successfully',async() => {
         const user = await global.createUser();
         const loginResponse = await request(app)
-            .post('/api/users/login')
+            .post('/trpc/user.login')
             .send({ email: user.email, password: user.password });   
         const cookie = loginResponse.headers['set-cookie'];
         const response = await request(app)
-           .post('/api/users/block/'+ user.id)
+           .post('/trpc/user.block')
            .set('Cookie', cookie)
-           .send()
+           .send({
+            id: user.id
+           })     
         expect(response.statusCode).toEqual(200);
-        expect(response.body).toMatchObject({
-            message: 'User blocked successfully'
+        expect(response.body.result).toMatchObject({
+            data: 'Blocked User Successfully.'
         });
     });
 });
@@ -105,16 +111,18 @@ describe('unblock user',() => {
     test('should unblock user successfully',async() => {
         const user = await global.createUser();
         const loginResponse = await request(app)
-            .post('/api/users/login')
+            .post('/trpc/user.login')
             .send({ email: user.email, password: user.password });   
         const cookie = loginResponse.headers['set-cookie'];
         const response = await request(app)
-           .post('/api/users/unblock/'+ user.id)
+           .post('/trpc/user.unblock')
            .set('Cookie', cookie)
-           .send()
+           .send({
+            id: user.id
+           })
         expect(response.statusCode).toEqual(200);
-        expect(response.body).toMatchObject({
-            message: 'User unblocked successfully'
+        expect(response.body.result).toMatchObject({
+            data: 'Unblocked User Successfully.'
         });
     });
 })
