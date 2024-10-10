@@ -1,10 +1,13 @@
+import * as trpcExpress from "@trpc/server/adapters/express";
+import { t, createContext } from "./trpc";
+
 import express from 'express';
 import 'reflect-metadata';
 import { json } from 'body-parser';
 import 'dotenv/config';
 import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, NotFoundError, KafkaProducer, KafkaConsumer, IProducer, Topics, MessageType, TOPIC_TYPE } from '@fayisorg/common-modules';
-import { UserRouter } from './routes/user';
+import { userRouter } from './routes/user';
 
 
 const app = express();
@@ -16,42 +19,29 @@ app.use(
         secure: false
     })
 )
+const appRouter = t.router({
+    user: userRouter
+  });
+  
+export type AppRouter = typeof appRouter;
+  
+app.use(
+    "/trpc",
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+      createContext,
+      onError({ error, path, type, input, ctx, req }) {
+        console.error(`tRPC Error on ${type} "${path}":`, error);
+    },
+    })
+  );
+
 
 app.use(currentUser);
-app.use('/api/users',UserRouter);
+// app.use('/api/users',userRouter);
 app.all('*', (req, res, next) => {
     next(new NotFoundError())
 });
-
-// (async() => {
-//     const producer =  new KafkaProducer();
-//     await producer.publish({
-//         topic: 'Auth_Events',
-//         headers:{},
-//         event: Topics.TEST,
-//         message: {
-//             userId: '123',
-//             action: 'login'
-//         }
-//     });
-
-//     const kafkaConsumer = new KafkaConsumer();
-
- 
-//     const handleOrderEvents = async (message: MessageType): Promise<void> => {
-//         console.log('Received message:', message);
-    
-//         // Implement your business logic here
-//         // For example, process the order event
-//     };
-//    setTimeout( async() => {
-//     await kafkaConsumer.subscribe(handleOrderEvents,'Auth_Events');
-//    },5000)
-//})()
-//
-
-
-
 
 app.use(errorHandler as express.ErrorRequestHandler);
 

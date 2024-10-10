@@ -10,7 +10,7 @@ spec:
   - host: s-cart.com
     http:
       paths:
-      - path: /api/users/(.*)
+      - path: /trpc/(.*)
         pathType: Prefix
         backend:
           service:

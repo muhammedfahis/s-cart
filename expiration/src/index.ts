@@ -2,28 +2,32 @@ import { KafkaConsumer } from "@fayisorg/common-modules";
 import { startKafkaConsumer } from "./helper";
 
 (async () => {
-    try {
-      const shutdown = async () => {
-        try {
-            const kafkaConsumer = new KafkaConsumer();
-            await kafkaConsumer.disconnectConsumer();
-            console.log('KafkaConsumer has been disconnected.');
-            process.exit(0);
-        } catch (error) {
-            console.error('Error during shutdown:', error);
-            process.exit(1);
-        }
-    };
-    
-    // Listen for termination signals
-    process.on('SIGINT', shutdown);
-    process.on('SIGTERM', shutdown);
-      await startKafkaConsumer()
+  const kafkaConsumer = new KafkaConsumer(); // Instantiate once
+  
+  const shutdown = async (signal: string) => {
+      console.log(`Received ${signal}. Shutting down...`);
+      try {
+          await kafkaConsumer.disconnectConsumer();
+          console.log('KafkaConsumer has been disconnected.');
+          process.exit(0); // Graceful exit
+      } catch (error) {
+          console.error('Error during shutdown:', error);
+          process.exit(1); // Error exit
+      }
+  };
 
-    } catch (err) {
-        console.log(err);
-    }
+  try {
+      // Listen for termination signals (SIGINT and SIGTERM)
+      process.on('SIGINT', () => shutdown('SIGINT'));
+      process.on('SIGTERM', () => shutdown('SIGTERM'));
+      await startKafkaConsumer(); // Ensure this has proper error handling
+
+  } catch (err) {
+      console.error('Failed to start Kafka Consumer:', err);
+      process.exit(1); // Exit on failure
+  }
 })();
+
 
 
 
